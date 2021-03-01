@@ -9,18 +9,17 @@
 # Learn more about module testing here:
 # http://docs.puppetlabs.com/guides/tests_smoke.html
 #
-include ::tuned
+include tuned
 
-class {'::tuned':
+class { 'tuned':
     tuned_ensure => 'absent',
 }
 
-class {'::tuned':
+class { 'tuned':
     active_profile => 'virtual-guest',
 }
 
-
-class {'::tuned':
+class { 'tuned':
     active_profile => 'mongodb',
 }
 

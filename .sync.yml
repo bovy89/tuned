@@ -1,0 +1,75 @@
+appveyor.yml:
+  delete: true
+.travis.yml:
+  delete: true
+.gitlab-ci.yml:
+  unmanaged: true
+Gemfile:
+  optional:
+    ':development':
+      - gem: 'puppet-lint-absolute_classname-check'
+      - gem: 'puppet-lint-empty_string-check'
+      - gem: 'puppet-lint-file_ensure-check'
+      - gem: 'puppet-lint-leading_zero-check'
+      - gem: 'puppet-lint-spaceship_operator_without_tag-check'
+      - gem: 'puppet-lint-trailing_comma-check'
+      - gem: 'puppet-lint-undef_in_function-check'
+      - gem: 'puppet-lint-unquoted_string-check'
+      - gem: 'puppet-lint-version_comparison-check'
+      - gem: 'puppet-lint-variable_contains_upcase'
+      - gem: 'puppet-lint-alias-check'
+      - gem: 'puppet-lint-classes_and_types_beginning_with_digits-check'
+      - gem: 'puppet-lint-file_source_rights-check'
+      - gem: 'puppet-lint-anchor-check'
+      - gem: 'puppet-lint-legacy_facts-check'
+      - gem: 'puppet-lint-manifest_whitespace-check'
+      - gem: 'puppet-lint-resource_reference_syntax'
+      - gem: 'puppet-lint-topscope-variable-check'
+      - gem: 'puppet-lint-no_symbolic_file_modes-check'
+      - gem: 'puppet-lint-absolute_template_path'
+.gitignore:
+  required: &ignorepaths
+  paths:
+    - '.dependencies/'
+    - '.librarian/'
+    - 'Puppetfile.lock'
+    - 'Guardfile'
+Rakefile:
+  extra_disabled_lint_checks:
+    - 'documentation'
+    - '80chars'
+    - '140chars'
+    - 'class_inherits_from_params_class'
+  extras:
+    - "MetadataJsonLint.options.strict_license = false"
+spec/default_facts.yml:
+  extra_facts:
+    concat_basedir: "/dne"
+    root_home: "/root"
+    oradb_inst_loc_data: "/oracle/oraInventory"
+    oradb_inst_products: "/oracle/product/11.2/db"
+    staging_http_get: "curl"
+    sudoversion: "1.8.6p7"
+    virtualenv_version: "1.10.1"
+    augeasversion: "1.0.0"
+    sensuclassic_version: "0.23.0"
+    puppet_localcacert: "/dne/ca.pem"
+    puppet_hostcert: "/dne/cert.pem"
+    puppet_hostprivkey: "/dne/key.pem"
+spec/spec_helper.rb:
+  coverage_report: true
+  minimum_code_coverage_percentage: 0
+  spec_overrides: |-
+    RSpec.configure do |c|
+      add_custom_fact :package_provider, ->(_os, facts) {
+        case facts[:os]['family']
+        when 'RedHat'
+          case facts[:os]['release']['major']
+          when '6', '7'
+            'yum'
+          else
+            'dnf'
+          end
+        end
+      }
+    end

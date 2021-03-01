@@ -22,20 +22,16 @@
 #   Default: {}
 #
 define tuned::profile (
-    $ensure         = 'present',
-    $profile_name   = $title,
-    $tuned_conf_dir = $::tuned::tuned_conf_dir,
-    $tuned_pkg      = $::tuned::tuned_pkg,
-    $conf_content   = undef,
-    $scripts        = {},
+    $ensure = 'present',
+    $profile_name = $title,
+    $tuned_conf_dir = $tuned::tuned_conf_dir,
+    $tuned_pkg = $tuned::tuned_pkg,
+    String $conf_content = undef,
+    Hash $scripts = {},
 ) {
-
     if ! defined(Class['tuned']) {
         fail('You must include the tuned base class before define a tuned profile')
     }
-
-    validate_string($conf_content)
-    validate_hash($scripts)
 
     case $ensure {
         'present': {
@@ -63,8 +59,8 @@ define tuned::profile (
         force   => true,
         require => Package[$tuned_pkg],
         before  => Class['tuned::profile::enable_profile'],
-    }->
-    file { "${profile_dir}/tuned.conf":
+    }
+    -> file { "${profile_dir}/tuned.conf":
         ensure  => $file_ensure,
         owner   => 'root',
         group   => 'root',
@@ -73,15 +69,15 @@ define tuned::profile (
         before  => Class['tuned::profile::enable_profile'],
     }
 
-    $script_names = keys($scripts)
-    if size($script_names) > 0 {
-        tuned::profile::create_script { $script_names:
-            ensure      => $file_ensure,
-            scripts     => $scripts,
-            profile_dir => $profile_dir,
-            require     => File[$profile_dir],
-            before      => Class['tuned::profile::enable_profile'],
+    $scripts.each |String $script_name, String $script_content| {
+        file { "${profile_dir}/${script_name}":
+            ensure  => $file_ensure,
+            owner   => 'root',
+            group   => 'root',
+            mode    => '0755',
+            content => $script_content,
+            require => File[$profile_dir],
+            before  => Class['tuned::profile::enable_profile'],
         }
     }
-
 }

@@ -19,17 +19,13 @@
 #   Default: undef
 #
 class tuned (
-    $tuned_ensure   = 'present',
-    $service_ensure = 'running',
-    $tuned_services = $::tuned::params::tuned_services,
-    $tuned_conf_dir = $::tuned::params::tuned_conf_dir,
-    $tuned_pkg      = $::tuned::params::tuned_pkg,
-    $active_profile = $::tuned::params::active_profile,
+    Enum['present', 'absent'] $tuned_ensure = 'present',
+    Enum['running', 'stopped'] $service_ensure = 'running',
+    $tuned_services = $tuned::params::tuned_services,
+    $tuned_conf_dir = $tuned::params::tuned_conf_dir,
+    $tuned_pkg = $tuned::params::tuned_pkg,
+    Optional[String] $active_profile = $tuned::params::active_profile,
 ) inherits tuned::params {
-
-    validate_re($tuned_ensure, '^(present|absent)$', "${tuned_ensure} is not supported for tuned_ensure.")
-    validate_re($service_ensure, '^(running|stopped)$', "${service_ensure} is not supported for service_ensure.")
-
     package { $tuned_pkg:
         ensure => $tuned_ensure,
     }
@@ -62,10 +58,9 @@ class tuned (
     }
 
     if $active_profile {
-        class {'::tuned::profile::enable_profile':
+        class { 'tuned::profile::enable_profile':
             profile_name => $active_profile,
             require      => Package[$tuned_pkg],
         }
     }
-
 }

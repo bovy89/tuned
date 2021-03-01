@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.1.0](https://github.com/bovy89/tuned/tree/v1.1.0) (2021-03-02)
+
+- puppet 7 support
+- PDK support
+
+[Full Changelog](https://github.com/bovy89/tuned/compare/v1.0.1...v1.1.0)
+
 ## [v1.0.1](https://github.com/bovy89/tuned/tree/v1.0.1) (2017-09-08)
 [Full Changelog](https://github.com/bovy89/tuned/compare/v1.0.0...v1.0.1)
 

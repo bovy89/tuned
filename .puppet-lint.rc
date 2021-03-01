@@ -1,0 +1,5 @@
+--relative
+--no-documentation-check
+--no-80chars-check
+--no-140chars-check
+--no-class_inherits_from_params_class-check

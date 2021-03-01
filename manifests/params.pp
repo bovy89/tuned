@@ -4,8 +4,7 @@
 #
 #
 class tuned::params {
-
-    if (versioncmp($::operatingsystemmajrelease, '7') >= 0){
+    if (versioncmp($facts['os']['release']['major'], '7') >= 0) {
         $tuned_services = ['tuned']
         $tuned_conf_dir = '/etc/tuned'
     } else {
@@ -16,10 +15,10 @@ class tuned::params {
     $tuned_pkg      = 'tuned'
     $active_profile = undef
 
-    case $::osfamily {
+    case $facts['os']['family'] {
         'RedHat': {}
         default: {
-            fail("Unsupported platform: ${::osfamily}/${::operatingsystem}")
+            fail("Unsupported platform: ${facts['os']['family']}/${facts['os']['name']}")
         }
     }
 }
