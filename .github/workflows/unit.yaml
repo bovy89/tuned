@@ -29,7 +29,6 @@ jobs:
           fixtures: .fixtures.yml
           allow_failure: false
     env:
-      BUNDLE_WITHOUT: system_tests:development
       PUPPET_GEM_VERSION: "~> ${{ matrix.puppet }}.0"
       FIXTURES_YML: ${{ matrix.fixtures }}
     name: Puppet ${{ matrix.puppet }} (Ruby ${{ matrix.ruby }} fixtures=${{ matrix.fixtures }})
